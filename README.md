@@ -4,6 +4,9 @@ Source for [mergelio.com](https://mergelio.com/), the landing page for
 [Mergelio](https://github.com/senseyman/mergelio). The site was moved here from
 the `website/` directory of the main repo.
 
+Mergelio and this site are created and maintained by Serhii Kotenko
+([@senseyman](https://github.com/senseyman)).
+
 Plain static HTML, CSS and JS — no framework, no package manager.
 
 ## Layout
