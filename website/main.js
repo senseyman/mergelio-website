@@ -1,6 +1,85 @@
-// Runs the merge-and-undo demo and the undo clip. Without JS the demo stays
-// a still picture of the graph.
+// Points the hero button at the file for the visitor's platform, switches the
+// download tabs, wires the copy buttons and runs the undo clip. Without JS the
+// hero button scrolls to the download section, where every platform is listed.
+// The hero playground lives in play.js.
 (function () {
+  function detectOs() {
+    var p = ((navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || '').toLowerCase();
+    var ua = navigator.userAgent.toLowerCase();
+    if (/iphone|ipad|ipod|android/.test(ua)) return null;
+    // iPadOS reports itself as a Mac; only it has a touch screen.
+    if (/macintosh/.test(ua) && navigator.maxTouchPoints > 1) return null;
+    if (p.indexOf('mac') === 0 || /macintosh/.test(ua)) return 'mac';
+    if (p.indexOf('win') === 0 || /windows/.test(ua)) return 'win';
+    if (/linux|x11|cros/.test(p + ' ' + ua)) return 'linux';
+    return null;
+  }
+
+  var os = detectOs();
+
+  // Download tabs. Without JS all panels show one after another.
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.os-tab'));
+  var tablist = document.querySelector('.os-tabs');
+  function select(name, focus) {
+    tabs.forEach(function (t) {
+      var on = t.getAttribute('data-os') === name;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+      if (on && focus) t.focus();
+    });
+  }
+  if (tablist && tabs.length) {
+    tabs.forEach(function (t, i) {
+      t.addEventListener('click', function () { select(t.getAttribute('data-os')); });
+      t.addEventListener('keydown', function (e) {
+        var next = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+        if (next === undefined) return;
+        e.preventDefault();
+        select(tabs[(next + tabs.length) % tabs.length].getAttribute('data-os'), true);
+      });
+    });
+    // "Your platform" badge on the tab that matches the visitor.
+    tabs.forEach(function (t) { if (t.getAttribute('data-os') === os) t.classList.add('yours'); });
+    tablist.hidden = false;
+    select(os || 'mac');
+  }
+
+  // Hero button: a direct link to the file for this platform.
+  var primary = document.getElementById('primary-download');
+  if (primary && os) {
+    var file = { mac: 'mac', win: 'win', linux: 'deb' }[os];
+    var link = document.querySelector('a[data-dl="' + file + '"]');
+    var version = document.getElementById('download-title').textContent.replace(/^Download Mergelio\s*/, '');
+    var names = { mac: 'macOS', win: 'Windows', linux: 'Linux' };
+    var kinds = { mac: 'Apple silicon', win: 'x64', linux: '.deb, Debian/Ubuntu' };
+    if (link) {
+      primary.href = link.href;
+      primary.setAttribute('download', '');
+      document.getElementById('primary-label').textContent = 'Download for ' + names[os];
+      document.getElementById('primary-sub').textContent =
+        'v' + version + ' · ' + kinds[os] + ' · ' + link.getAttribute('data-size');
+      var alt = document.getElementById('primary-alt');
+      var rpm = document.querySelector('a[data-dl="rpm"]');
+      alt.innerHTML = os === 'linux' && rpm
+        ? 'On Fedora? <a href="' + rpm.href + '" download>Get the .rpm</a> · <a href="#download">Other platforms</a>'
+        : 'Not on ' + names[os] + '? <a href="#download">Other platforms</a>';
+      alt.hidden = false;
+    }
+  }
+
+  document.querySelectorAll('.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var text = btn.previousElementSibling.textContent;
+      if (!navigator.clipboard) return;
+      navigator.clipboard.writeText(text).then(function () {
+        btn.textContent = 'Copied';
+        btn.classList.add('done');
+        setTimeout(function () { btn.textContent = 'Copy'; btn.classList.remove('done'); }, 1500);
+      });
+    });
+  });
+
   // The undo clip plays only while it is on screen, never when the visitor
   // asked for reduced motion, and can always be paused.
   var clip = document.querySelector('.clip');
@@ -34,28 +113,4 @@
     toggle.textContent = paused ? 'Play' : 'Pause';
   }
 
-  var demo = document.getElementById('demo');
-  if (!demo) return;
-  var merge = document.getElementById('demo-merge');
-  var undo = document.getElementById('demo-undo');
-  var status = document.getElementById('demo-status');
-  var messages = {
-    merged: 'Merged feature/login into main. main now points at the new merge commit.',
-    undone: 'Merge undone. main is back where it was, and feature/login still has both its commits.'
-  };
-
-  function show(state, focusNext) {
-    demo.setAttribute('data-state', state);
-    status.textContent = messages[state];
-    merge.disabled = state === 'merged';
-    undo.disabled = state !== 'merged';
-    // The pressed button turns disabled, so hand focus to the one that is
-    // now live instead of dropping it on the page.
-    if (focusNext) focusNext.focus();
-  }
-
-  merge.addEventListener('click', function () { show('merged', undo); });
-  undo.addEventListener('click', function () { show('undone', merge); });
-  status.textContent += ' Merge it, then take it back.';
-  demo.querySelector('.demo-actions').hidden = false;
 })();

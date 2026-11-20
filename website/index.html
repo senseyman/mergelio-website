@@ -22,6 +22,7 @@
   <link rel="preload" href="fonts/schibsted-grotesk.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="style.css">
   <script src="main.js" defer></script>
+  <script src="play.js" defer></script>
 </head>
 <body>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -42,6 +43,9 @@
         <circle cx="50" cy="46" r="11" fill="url(#node)"/>
         <circle cx="46.5" cy="42.5" r="3.4" fill="#fff" fill-opacity=".55"/>
       </symbol>
+      <symbol id="i-download" viewBox="0 0 20 20">
+        <path d="M10 3v10m0 0-4-4m4 4 4-4M4 16.5h12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
     </defs>
   </svg>
 
@@ -55,6 +59,7 @@
       </a>
       <nav class="nav-links" aria-label="Main">
         <a href="#tour">Tour</a>
+        <a href="#download">Download</a>
         <a class="gh" href="https://github.com/senseyman/mergelio">
           <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/></svg>
           GitHub
@@ -69,49 +74,43 @@
         <h1>Git history you can see, shape and&nbsp;undo.</h1>
         <p class="lead">Mergelio is a free, open-source Git client for macOS, Windows and Linux. Read every branch in one graph, stage exactly the lines you want, resolve conflicts, rebase, and undo commits, merges and resets when you change your mind.</p>
         <div class="cta">
-          <a class="btn primary" href="https://github.com/senseyman/mergelio">Visit Mergelio on GitHub</a>
+          <a class="btn primary big" id="primary-download" href="#download">
+            <svg class="i" aria-hidden="true"><use href="#i-download"/></svg>
+            <span class="btn-text">
+              <span id="primary-label">Download Mergelio</span>
+              <small id="primary-sub">Version {{VERSION}} for macOS, Windows and Linux</small>
+            </span>
+          </a>
+          <a class="btn quiet big" href="https://github.com/senseyman/mergelio">Source on GitHub</a>
         </div>
-        <p class="cta-note">Free under the BSD-3-Clause licence. Mergelio uses the Git already on your machine; if there isn't one, <a href="https://git-scm.com/">install Git</a> first.</p>
+        <p class="cta-alt" id="primary-alt" hidden></p>
+        <p class="cta-note">Free under the BSD-3-Clause licence. Mergelio uses the Git already on your machine; if there isn't one, <a href="https://git-scm.com/downloads">install Git</a> first.</p>
       </div>
 
-      <figure class="demo" id="demo" data-state="start">
-        <svg class="demo-graph" viewBox="0 0 440 172" role="img" aria-labelledby="demo-title">
-          <title id="demo-title">Commit graph: main with four commits, and feature/login branching off the second with two commits of its own.</title>
-          <g class="lane-main">
-            <path class="edge" d="M40 52H280"/>
-            <path class="edge grow" pathLength="1" d="M280 52H372"/>
-          </g>
-          <g class="lane-feature">
-            <path class="edge" d="M110 52C150 52 140 124 180 124H260"/>
-            <path class="edge grow" pathLength="1" d="M260 124C320 124 312 52 372 52"/>
-          </g>
-          <g class="nodes-main">
-            <circle cx="40" cy="52" r="8"/><circle cx="110" cy="52" r="8"/>
-            <circle cx="195" cy="52" r="8"/><circle cx="280" cy="52" r="8"/>
-          </g>
-          <g class="nodes-feature">
-            <circle cx="180" cy="124" r="8"/><circle cx="260" cy="124" r="8"/>
-          </g>
-          <g class="merge-node">
-            <circle cx="372" cy="52" r="11"/>
-            <circle class="merge-dot" cx="372" cy="52" r="4"/>
-          </g>
-          <g class="ref ref-main">
-            <rect x="252" y="12" width="56" height="22" rx="11"/>
-            <text x="280" y="27.5">main</text>
-          </g>
-          <g class="ref ref-feature">
-            <rect x="208" y="142" width="104" height="22" rx="11"/>
-            <text x="260" y="157.5">feature/login</text>
-          </g>
-        </svg>
-        <figcaption>
-          <p class="demo-status" id="demo-status" aria-live="polite">feature/login has two commits that main doesn't.</p>
-          <div class="demo-actions" hidden>
-            <button type="button" class="btn small primary" id="demo-merge">Merge feature/login</button>
-            <button type="button" class="btn small quiet" id="demo-undo" disabled>Undo merge</button>
+      <figure class="play" id="play">
+        <div class="win">
+          <div class="win-bar">
+            <span class="win-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="win-title">mergelio <span>&mdash; ~/code/shop</span></span>
+            <button type="button" class="tour-toggle" hidden>Pause tour</button>
           </div>
-        </figcaption>
+          <div class="win-tools" role="toolbar" aria-label="Try an operation on this graph" hidden></div>
+          <div class="win-graph">
+            <picture>
+              <source srcset="img/graph-dark.webp" media="(prefers-color-scheme: dark)">
+              <img src="img/graph-light.webp" width="1920" height="1200" alt="Mergelio's commit graph with several branches in their own lanes.">
+            </picture>
+          </div>
+          <div class="win-foot" hidden>
+            <span class="j-label">Journal</span>
+            <ol class="journal" aria-label="Operations, newest first"></ol>
+            <span class="win-undo">
+              <button type="button" class="tool" data-act="undo">Undo</button>
+              <button type="button" class="tool" data-act="redo">Redo</button>
+            </span>
+          </div>
+        </div>
+        <figcaption class="play-status" aria-live="polite">Squash, rebase, merge, reset: every step goes in the journal, and every step can be undone.</figcaption>
       </figure>
     </section>
 
@@ -189,6 +188,101 @@
           <dd>Commit and tag signature checks, blame and line history, worktrees, git notes, stashes with undo, profiles with their own SSH keys, a multi-repo dashboard, a command palette, themes, and an English or Ukrainian interface. <a href="https://github.com/senseyman/mergelio#features">Read the full feature list</a></dd>
         </div>
       </dl>
+    </section>
+
+    <section class="download wrap" id="download" aria-labelledby="download-title">
+      <div class="dl-head">
+        <h2 id="download-title">Download Mergelio {{VERSION}}</h2>
+        <p class="sub">Released {{DATE}}. <a href="{{RELEASE_URL}}">What's new in this release</a></p>
+      </div>
+
+      <div class="os-tabs" role="tablist" aria-label="Choose a platform" hidden>
+        <button type="button" class="os-tab" role="tab" id="tab-mac" aria-controls="panel-mac" aria-selected="true" data-os="mac">
+          <span class="os-name">macOS</span><span class="os-meta">Apple silicon</span>
+        </button>
+        <button type="button" class="os-tab" role="tab" id="tab-win" aria-controls="panel-win" aria-selected="false" tabindex="-1" data-os="win">
+          <span class="os-name">Windows</span><span class="os-meta">x64</span>
+        </button>
+        <button type="button" class="os-tab" role="tab" id="tab-linux" aria-controls="panel-linux" aria-selected="false" tabindex="-1" data-os="linux">
+          <span class="os-name">Linux</span><span class="os-meta">.deb and .rpm, x64</span>
+        </button>
+      </div>
+
+      <div class="os-panels">
+        <div class="os-panel" id="panel-mac" role="tabpanel" aria-labelledby="tab-mac" data-os="mac">
+          <div class="os-about">
+            <h3>macOS</h3>
+            <p class="req">Apple silicon (M1 or later), macOS 12 or later</p>
+            <ol class="how">
+              <li>Open the disk image.</li>
+              <li>Drag Mergelio to Applications.</li>
+            </ol>
+            <p class="trust">Signed with an Apple Developer ID and notarized by Apple.</p>
+          </div>
+          <div class="files">
+            <div class="file">
+              <div class="file-top">
+                <span class="file-kind">.dmg</span>
+                <span class="file-info"><code class="file-name">{{MAC_FILE}}</code><span class="file-size">{{MAC_SIZE}}</span></span>
+                <a class="btn primary" href="{{MAC_URL}}" data-dl="mac" data-size="{{MAC_SIZE}}" download><svg class="i" aria-hidden="true"><use href="#i-download"/></svg>Download</a>
+              </div>
+              <div class="sha"><span class="sha-label">SHA-256</span><code>{{MAC_SHA}}</code><button type="button" class="copy" aria-label="Copy SHA-256 of the .dmg">Copy</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="os-panel" id="panel-win" role="tabpanel" aria-labelledby="tab-win" data-os="win">
+          <div class="os-about">
+            <h3>Windows</h3>
+            <p class="req">x64</p>
+            <ol class="how">
+              <li>Run the installer.</li>
+              <li>Install for all users, or choose to install just for you.</li>
+            </ol>
+            <p class="trust">Signed with a Certum code signing certificate issued to Serhii Kotenko. SmartScreen may still ask about a fresh release: choose <b>More info</b>, check the publisher, then <b>Run anyway</b>.</p>
+          </div>
+          <div class="files">
+            <div class="file">
+              <div class="file-top">
+                <span class="file-kind">.exe</span>
+                <span class="file-info"><code class="file-name">{{WIN_FILE}}</code><span class="file-size">{{WIN_SIZE}}</span></span>
+                <a class="btn primary" href="{{WIN_URL}}" data-dl="win" data-size="{{WIN_SIZE}}" download><svg class="i" aria-hidden="true"><use href="#i-download"/></svg>Download</a>
+              </div>
+              <div class="sha"><span class="sha-label">SHA-256</span><code>{{WIN_SHA}}</code><button type="button" class="copy" aria-label="Copy SHA-256 of the installer">Copy</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="os-panel" id="panel-linux" role="tabpanel" aria-labelledby="tab-linux" data-os="linux">
+          <div class="os-about">
+            <h3>Linux</h3>
+            <p class="req">x64. Pick the package for your distribution.</p>
+            <p class="how-note">Both packages install to <code>/opt/mergelio</code>, put <code>mergelio</code> on your <code>PATH</code> and add a launcher entry.</p>
+          </div>
+          <div class="files">
+            <div class="file">
+              <div class="file-top">
+                <span class="file-kind">.deb</span>
+                <span class="file-info"><span class="file-for">Debian, Ubuntu</span><code class="file-name">{{DEB_FILE}}</code><span class="file-size">{{DEB_SIZE}}</span></span>
+                <a class="btn primary" href="{{DEB_URL}}" data-dl="deb" data-size="{{DEB_SIZE}}" download><svg class="i" aria-hidden="true"><use href="#i-download"/></svg>Download</a>
+              </div>
+              <div class="cmd"><code>sudo apt install ./{{DEB_FILE}}</code><button type="button" class="copy" aria-label="Copy apt install command">Copy</button></div>
+              <div class="sha"><span class="sha-label">SHA-256</span><code>{{DEB_SHA}}</code><button type="button" class="copy" aria-label="Copy SHA-256 of the .deb">Copy</button></div>
+            </div>
+            <div class="file">
+              <div class="file-top">
+                <span class="file-kind">.rpm</span>
+                <span class="file-info"><span class="file-for">Fedora</span><code class="file-name">{{RPM_FILE}}</code><span class="file-size">{{RPM_SIZE}}</span></span>
+                <a class="btn primary" href="{{RPM_URL}}" data-dl="rpm" data-size="{{RPM_SIZE}}" download><svg class="i" aria-hidden="true"><use href="#i-download"/></svg>Download</a>
+              </div>
+              <div class="cmd"><code>sudo dnf install ./{{RPM_FILE}}</code><button type="button" class="copy" aria-label="Copy dnf install command">Copy</button></div>
+              <div class="sha"><span class="sha-label">SHA-256</span><code>{{RPM_SHA}}</code><button type="button" class="copy" aria-label="Copy SHA-256 of the .rpm">Copy</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="fine">Every release ships <a href="{{SUMS_URL}}">SHA256SUMS.txt</a> with a detached signature, <a href="{{SIG_URL}}">SHA256SUMS.txt.asc</a>. Here is <a href="https://github.com/senseyman/mergelio#verifying-a-download">how to verify a download</a>. On macOS and Windows, Mergelio can install later updates itself if you let it check for new releases.</p>
     </section>
 
   </main>
