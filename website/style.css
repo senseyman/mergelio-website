@@ -117,7 +117,6 @@ code { font-family: var(--mono); font-size: 0.84em; }
 .btn.primary { background: var(--accent); color: var(--accent-ink); }
 .btn.primary:not(:disabled):hover { filter: brightness(1.08); }
 .btn.primary small { font-weight: 500; font-size: 14px; opacity: 0.75; }
-.btn.small { min-height: 40px; padding: 0 16px; font-size: 15px; }
 .btn:disabled { cursor: default; opacity: 0.4; }
 
 /* Hero */
@@ -149,45 +148,130 @@ h1 {
 .btn.quiet { background: transparent; color: var(--ink); border-color: var(--edge); }
 .btn.quiet:not(:disabled):hover { border-color: var(--muted); }
 
-/* The merge-and-undo demo: one graph, three states driven by data-state. */
-.demo {
-  margin: 0;
-  padding: 28px 28px 24px;
+/* Hero playground: a small app window with a live commit graph. */
+.play { margin: 0; min-width: 0; }
+.win {
+  overflow: hidden;
   border: 1px solid var(--rule);
-  border-radius: 16px;
+  border-radius: 14px;
+  background: var(--bg);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 24px 60px -24px rgb(21 26 46 / 0.28);
+}
+.win-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 40px;
+  padding: 0 10px 0 14px;
+  border-bottom: 1px solid var(--rule);
   background: var(--panel);
 }
-.demo-graph { display: block; width: 100%; height: auto; overflow: visible; }
-.demo-graph .edge { fill: none; stroke-width: 4; stroke-linecap: round; }
-.lane-main .edge { stroke: var(--lane-main); }
-.lane-feature .edge { stroke: var(--lane-feature); }
-.nodes-main circle, .nodes-feature circle { stroke: var(--panel); stroke-width: 3; }
-.nodes-main circle { fill: var(--lane-main); }
-.nodes-feature circle { fill: var(--lane-feature); }
+.win-dots { display: inline-flex; gap: 7px; }
+.win-dots i { width: 11px; height: 11px; border-radius: 50%; background: var(--rule); }
+.win-title { flex: 1; min-width: 0; font-size: 13px; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.win-title span { font-weight: 400; color: var(--muted); }
+.tour-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 26px;
+  padding: 0 10px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--muted);
+  font: 600 12px var(--font);
+  cursor: pointer;
+}
+.tour-toggle::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--edge); }
+.play.touring .tour-toggle::before { background: var(--lane-feature); animation: pulse 1.6s ease-in-out infinite; }
+.tour-toggle:hover { color: var(--ink); }
+.tour-toggle[hidden] { display: none; }
+@keyframes pulse { 50% { opacity: 0.3; } }
 
-.demo-graph .grow { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 0.45s var(--ease); }
-.merge-node { opacity: 0; transform: scale(0.4); transform-box: fill-box; transform-origin: center; transition: opacity 0.2s, transform 0.3s var(--ease); }
-.merge-node circle { fill: var(--lane-main); stroke: var(--panel); stroke-width: 3; }
-.merge-node .merge-dot { fill: var(--panel); stroke: none; }
+.win-tools { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--rule); }
+.win-tools[hidden] { display: none; }
+.tool {
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  font: 600 13px var(--font);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.tool:not(:disabled):hover { border-color: var(--accent); }
+.tool:disabled { cursor: default; opacity: 0.4; }
 
-.ref rect { stroke-width: 1.5; }
-.ref text { font: 600 12.5px var(--font); text-anchor: middle; }
-.ref-main rect { fill: var(--lane-main); stroke: var(--lane-main); }
-.ref-main text { fill: var(--accent-ink); }
-.ref-feature rect { fill: var(--panel); stroke: var(--lane-feature); }
-.ref-feature text { fill: var(--ink); }
-.ref-main { transition: transform 0.4s var(--ease); }
+.win-graph { position: relative; }
+.win-graph picture img { display: block; width: 100%; height: auto; }
+.win-graph.live { overflow: hidden; }
+.g-svg { position: absolute; left: 0; top: 0; overflow: visible; }
+.g-edge { fill: none; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 1; transition: d 0.5s var(--ease), opacity 0.35s; }
+.g-edge.enter { animation: draw 0.5s var(--ease) 0.15s backwards; }
+@keyframes draw { from { stroke-dashoffset: 1; } }
+.g-edge.out { opacity: 0; }
+.g-edge.lane-0 { stroke: var(--lane-main); }
+.g-edge.lane-1 { stroke: var(--lane-feature); }
+.g-node { transition: transform 0.5s var(--ease), opacity 0.35s; }
+.g-node circle { stroke: var(--bg); stroke-width: 3; }
+.g-node.enter circle { transform-box: fill-box; transform-origin: center; animation: pop 0.35s var(--ease) 0.2s backwards; }
+@keyframes pop { from { transform: scale(0); } }
+.g-node.lane-0 circle { fill: var(--lane-main); }
+.g-node.lane-1 circle { fill: var(--lane-feature); }
+.g-node circle.g-hole { fill: var(--bg); stroke: none; }
+.g-node.out { opacity: 0; }
 
-.demo[data-state="merged"] .grow { stroke-dashoffset: 0; }
-.demo[data-state="merged"] .merge-node { opacity: 1; transform: none; transition-delay: 0.3s; }
-.demo[data-state="merged"] .ref-main { transform: translateX(92px); transition-delay: 0.3s; }
-/* Going back runs the same moves in reverse order: node, pointer, then lines. */
-.demo:not([data-state="merged"]) .grow { transition-delay: 0.25s; }
+.g-rows { list-style: none; margin: 0; padding: 0; }
+.g-row {
+  position: absolute;
+  left: var(--gutter, 58px);
+  right: 10px;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 34px;
+  padding: 0 8px;
+  border-radius: 7px;
+  font-size: 14px;
+  transition: transform 0.5s var(--ease), opacity 0.35s, background 0.6s;
+}
+.g-row.out { opacity: 0; }
+.g-row.enter { animation: rise 0.4s var(--ease) backwards; }
+@keyframes rise { from { opacity: 0; } }
+.g-row.new { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.g-sha { flex: none; color: var(--muted); font-size: 12px; }
+.g-msg { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: var(--ink); }
+.g-row.fixup .g-msg { color: var(--muted); font-style: italic; }
+.g-refs { flex: none; display: inline-flex; gap: 6px; }
+.pill { padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; line-height: 1.5; }
+.pill.lane-0 { background: var(--lane-main); color: var(--accent-ink); }
+.pill.lane-1 { border: 1.5px solid var(--lane-feature); color: var(--ink); padding: 0.5px 8px; }
 
-.demo figcaption { margin-top: 20px; }
-.demo-status { min-height: 3.2em; font-size: 15.5px; line-height: 1.55; }
-.demo-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
-.demo-actions[hidden] { display: none; }
+.win-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--rule);
+  background: var(--panel);
+  font-size: 12.5px;
+}
+.win-foot[hidden] { display: none; }
+.j-label { flex: none; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-size: 11px; }
+.journal { flex: 1; min-width: 0; display: flex; gap: 6px; margin: 0; padding: 0; list-style: none; overflow: hidden; white-space: nowrap;
+  -webkit-mask-image: linear-gradient(90deg, #000 80%, transparent); mask-image: linear-gradient(90deg, #000 80%, transparent); }
+.journal li { flex: none; }
+.journal li { padding: 2px 8px; border-radius: 6px; background: var(--bg); border: 1px solid var(--rule); color: var(--ink); }
+.journal li.j-undone { color: var(--muted); text-decoration: line-through; opacity: 0.7; }
+.journal li.j-empty { border-style: dashed; background: none; color: var(--muted); }
+.win-undo { flex: none; display: inline-flex; gap: 6px; }
+.win-undo .tool { min-height: 28px; padding: 0 10px; font-size: 12.5px; background: var(--bg); }
+
+.play-status { min-height: 3.2em; margin-top: 18px; color: var(--muted); font-size: 15px; line-height: 1.55; }
 
 /* Section headings */
 h2 {
@@ -444,8 +528,10 @@ h2 {
   .nav-links { gap: 20px; }
   .nav-links a:not(.gh) { display: none; }
   .hero { padding: 44px 0 64px; }
-  .demo { padding: 20px 16px 18px; }
-  .demo-status { min-height: 4.7em; }
+  .win-tools { gap: 6px; padding: 10px; }
+  .tool { padding: 0 10px; font-size: 12.5px; }
+  .win-title span { display: none; }
+  .play-status { min-height: 4.7em; }
   .tour, .also, .download { padding-top: 64px; }
   .cta .btn { width: 100%; justify-content: flex-start; }
   .os-tabs { grid-template-columns: 1fr; }
@@ -464,5 +550,5 @@ h2 {
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .demo *, .demo-graph *, .os-tab { transition: none !important; }
+  .g-svg *, .g-row, .os-tab { transition: none !important; animation: none !important; }
 }

@@ -17,6 +17,7 @@ website/
 ├── privacy.html      privacy policy
 ├── style.css
 ├── main.js
+├── play.js           hero playground: live commit graph with undo/redo
 ├── sitemap.xml       template; {{DATE_ISO}} is filled in at build time
 ├── robots.txt
 ├── CNAME             custom domain for GitHub Pages (mergelio.com)

@@ -1,7 +1,7 @@
 // Points the hero button at the file for the visitor's platform, switches the
-// download tabs, wires the copy buttons, and runs the merge-and-undo demo and
-// the undo clip. Without JS the hero button scrolls to the download section,
-// every platform is listed there, and the demo stays a still picture.
+// download tabs, wires the copy buttons and runs the undo clip. Without JS the
+// hero button scrolls to the download section, where every platform is listed.
+// The hero playground lives in play.js.
 (function () {
   function detectOs() {
     var p = ((navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || '').toLowerCase();
@@ -113,28 +113,4 @@
     toggle.textContent = paused ? 'Play' : 'Pause';
   }
 
-  var demo = document.getElementById('demo');
-  if (!demo) return;
-  var merge = document.getElementById('demo-merge');
-  var undo = document.getElementById('demo-undo');
-  var status = document.getElementById('demo-status');
-  var messages = {
-    merged: 'Merged feature/login into main. main now points at the new merge commit.',
-    undone: 'Merge undone. main is back where it was, and feature/login still has both its commits.'
-  };
-
-  function show(state, focusNext) {
-    demo.setAttribute('data-state', state);
-    status.textContent = messages[state];
-    merge.disabled = state === 'merged';
-    undo.disabled = state !== 'merged';
-    // The pressed button turns disabled, so hand focus to the one that is
-    // now live instead of dropping it on the page.
-    if (focusNext) focusNext.focus();
-  }
-
-  merge.addEventListener('click', function () { show('merged', undo); });
-  undo.addEventListener('click', function () { show('undone', merge); });
-  status.textContent += ' Merge it, then take it back.';
-  demo.querySelector('.demo-actions').hidden = false;
 })();

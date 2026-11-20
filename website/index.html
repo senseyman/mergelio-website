@@ -22,6 +22,7 @@
   <link rel="preload" href="fonts/schibsted-grotesk.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="style.css">
   <script src="main.js" defer></script>
+  <script src="play.js" defer></script>
 </head>
 <body>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -86,44 +87,30 @@
         <p class="cta-note">Free under the BSD-3-Clause licence. Mergelio uses the Git already on your machine; if there isn't one, <a href="https://git-scm.com/downloads">install Git</a> first.</p>
       </div>
 
-      <figure class="demo" id="demo" data-state="start">
-        <svg class="demo-graph" viewBox="0 0 440 172" role="img" aria-labelledby="demo-title">
-          <title id="demo-title">Commit graph: main with four commits, and feature/login branching off the second with two commits of its own.</title>
-          <g class="lane-main">
-            <path class="edge" d="M40 52H280"/>
-            <path class="edge grow" pathLength="1" d="M280 52H372"/>
-          </g>
-          <g class="lane-feature">
-            <path class="edge" d="M110 52C150 52 140 124 180 124H260"/>
-            <path class="edge grow" pathLength="1" d="M260 124C320 124 312 52 372 52"/>
-          </g>
-          <g class="nodes-main">
-            <circle cx="40" cy="52" r="8"/><circle cx="110" cy="52" r="8"/>
-            <circle cx="195" cy="52" r="8"/><circle cx="280" cy="52" r="8"/>
-          </g>
-          <g class="nodes-feature">
-            <circle cx="180" cy="124" r="8"/><circle cx="260" cy="124" r="8"/>
-          </g>
-          <g class="merge-node">
-            <circle cx="372" cy="52" r="11"/>
-            <circle class="merge-dot" cx="372" cy="52" r="4"/>
-          </g>
-          <g class="ref ref-main">
-            <rect x="252" y="12" width="56" height="22" rx="11"/>
-            <text x="280" y="27.5">main</text>
-          </g>
-          <g class="ref ref-feature">
-            <rect x="208" y="142" width="104" height="22" rx="11"/>
-            <text x="260" y="157.5">feature/login</text>
-          </g>
-        </svg>
-        <figcaption>
-          <p class="demo-status" id="demo-status" aria-live="polite">feature/login has two commits that main doesn't.</p>
-          <div class="demo-actions" hidden>
-            <button type="button" class="btn small primary" id="demo-merge">Merge feature/login</button>
-            <button type="button" class="btn small quiet" id="demo-undo" disabled>Undo merge</button>
+      <figure class="play" id="play">
+        <div class="win">
+          <div class="win-bar">
+            <span class="win-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="win-title">mergelio <span>&mdash; ~/code/shop</span></span>
+            <button type="button" class="tour-toggle" hidden>Pause tour</button>
           </div>
-        </figcaption>
+          <div class="win-tools" role="toolbar" aria-label="Try an operation on this graph" hidden></div>
+          <div class="win-graph">
+            <picture>
+              <source srcset="img/graph-dark.webp" media="(prefers-color-scheme: dark)">
+              <img src="img/graph-light.webp" width="1920" height="1200" alt="Mergelio's commit graph with several branches in their own lanes.">
+            </picture>
+          </div>
+          <div class="win-foot" hidden>
+            <span class="j-label">Journal</span>
+            <ol class="journal" aria-label="Operations, newest first"></ol>
+            <span class="win-undo">
+              <button type="button" class="tool" data-act="undo">Undo</button>
+              <button type="button" class="tool" data-act="redo">Redo</button>
+            </span>
+          </div>
+        </div>
+        <figcaption class="play-status" aria-live="polite">Squash, rebase, merge, reset: every step goes in the journal, and every step can be undone.</figcaption>
       </figure>
     </section>
 
