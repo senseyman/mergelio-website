@@ -44,9 +44,22 @@ python3 -m http.server -d website 8000
 ```
 
 Requires `bash`, `curl` and `jq`. The script copies the site into `_site` and
-sets the sitemap `lastmod` to the publish date of the latest release in
-`senseyman/mergelio` (override with `REPO=owner/name`). Set `GH_TOKEN` to avoid
-API rate limits. The build fails if a `{{PLACEHOLDER}}` is left unfilled.
+fills `index.html` from the latest release in `senseyman/mergelio` (override
+with `REPO=owner/name`): version, release date, and for each platform file
+(`.dmg`, Windows `setup.exe`, `.deb`, `.rpm`) its download URL, name, size and
+SHA-256 digest, plus links to `SHA256SUMS.txt` and its `.asc` signature. The
+sitemap `lastmod` is set to the release's publish date. Set `GH_TOKEN` to avoid
+API rate limits.
+
+The build fails if the release is missing any platform file or its digest, or
+if a `{{PLACEHOLDER}}` is left unfilled, so a deploy never publishes a dead
+download button.
+
+On the page, `main.js` detects the visitor's OS: the hero button becomes a
+direct download for that platform (`.deb` on Linux, with an `.rpm` link next to
+it), and the download section opens on the matching tab. Without JS, or on
+phones and tablets, the hero button scrolls to the download section, which then
+lists every platform.
 
 ## Social preview image
 
@@ -65,11 +78,18 @@ in the default macOS location.
 site with `build.sh` and publishes it to GitHub Pages at `mergelio.com`. It runs:
 
 - on push to `main` that touches `website/**` or the workflow itself,
-- weekly (Mondays 06:17 UTC), so the sitemap `lastmod` picks up new
-  releases of `senseyman/mergelio`,
+- daily (06:17 UTC), so download links follow new releases of
+  `senseyman/mergelio`,
+- on a `repository_dispatch` of type `mergelio-release`,
 - manually via **Actions → Website → Run workflow**.
 
-To pick up a new app release right away, trigger the workflow manually.
+To pick up a new app release right away, trigger the workflow manually, or
+have the release workflow in `senseyman/mergelio` send the dispatch (needs a
+token with access to this repo):
+
+```sh
+gh api repos/senseyman/mergelio-website/dispatches -f event_type=mergelio-release
+```
 
 Repo settings: **Settings → Pages → Source** must be **GitHub Actions**, with
 `mergelio.com` as the custom domain.

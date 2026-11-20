@@ -1,7 +1,8 @@
 name: Website
 
-# Publishes mergelio.com to GitHub Pages. Rebuilt weekly so the sitemap's
-# lastmod date follows the latest release of senseyman/mergelio.
+# Publishes mergelio.com to GitHub Pages. The page links straight to the files
+# of the latest senseyman/mergelio release, so it is rebuilt daily, and right
+# away when a release sends a `mergelio-release` repository_dispatch.
 on:
   push:
     branches: [main]
@@ -9,7 +10,9 @@ on:
       - 'website/**'
       - '.github/workflows/website.yml'
   schedule:
-    - cron: '17 6 * * 1'
+    - cron: '17 6 * * *'
+  repository_dispatch:
+    types: [mergelio-release]
   workflow_dispatch:
 
 permissions:
