@@ -71,7 +71,7 @@ asset SIG  '^SHA256SUMS\.txt\.asc$'
 
 rm -rf "$OUT_DIR"
 mkdir -p "$OUT_DIR"
-cp -R "$SRC_DIR/img" "$SRC_DIR/fonts" "$SRC_DIR/style.css" "$SRC_DIR/main.js" "$SRC_DIR/play.js" "$SRC_DIR/privacy.html" "$SRC_DIR/CNAME" "$SRC_DIR/robots.txt" "$OUT_DIR/"
+cp -R "$SRC_DIR/img" "$SRC_DIR/fonts" "$SRC_DIR/style.css" "$SRC_DIR/main.js" "$SRC_DIR/play.js" "$SRC_DIR/privacy.html" "$SRC_DIR/terms.html" "$SRC_DIR/CNAME" "$SRC_DIR/robots.txt" "$OUT_DIR/"
 
 # Values are URLs, file names, sizes and hex digests: none contain '|', so it
 # is a safe sed delimiter.
@@ -84,7 +84,7 @@ sed "${sed_args[@]}" "$SRC_DIR/index.html" > "$OUT_DIR/index.html"
 # The page only changes meaningfully with a release, so that date is lastmod.
 sed -e "s|{{DATE_ISO}}|${date}|g" "$SRC_DIR/sitemap.xml" > "$OUT_DIR/sitemap.xml"
 
-for page in index.html privacy.html sitemap.xml; do
+for page in index.html privacy.html terms.html sitemap.xml; do
   if grep -q '{{' "$OUT_DIR/$page"; then
     echo "error: unfilled placeholder left in ${page}:" >&2
     grep -o '{{[A-Z_]*}}' "$OUT_DIR/$page" | sort -u >&2
