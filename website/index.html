@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mergelio — Git history you can see, shape and undo</title>
-  <meta name="description" content="Mergelio is a free, open-source Git client for macOS, Windows and Linux: a commit graph, line-level staging, a conflict editor, interactive rebase, and undo for commits, merges, rebases and resets.">
+  <meta name="description" content="Mergelio is a free, open-source Git client for macOS and Linux, with Windows coming soon: a commit graph, line-level staging, a conflict editor, interactive rebase, and undo for commits, merges, rebases and resets.">
   <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0d1018" media="(prefers-color-scheme: dark)">
@@ -14,7 +14,7 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mergelio.com/">
   <meta property="og:title" content="Mergelio — Git history you can see, shape and undo">
-  <meta property="og:description" content="A free, open-source Git client for macOS, Windows and Linux.">
+  <meta property="og:description" content="A free, open-source Git client for macOS and Linux, with Windows coming soon.">
   <meta property="og:image" content="https://mergelio.com/img/og.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -72,13 +72,13 @@
     <section class="hero wrap" id="top">
       <div class="hero-text">
         <h1>Git history you can see, shape and&nbsp;undo.</h1>
-        <p class="lead">Mergelio is a free, open-source Git client for macOS, Windows and Linux. Read every branch in one graph, stage exactly the lines you want, resolve conflicts, rebase, and undo commits, merges and resets when you change your mind.</p>
+        <p class="lead">Mergelio is a free, open-source Git client for macOS and Linux, with Windows coming soon. Read every branch in one graph, stage exactly the lines you want, resolve conflicts, rebase, and undo commits, merges and resets when you change your mind.</p>
         <div class="cta">
           <a class="btn primary big" id="primary-download" href="#download">
             <svg class="i" aria-hidden="true"><use href="#i-download"/></svg>
             <span class="btn-text">
               <span id="primary-label">Download Mergelio</span>
-              <small id="primary-sub">Version {{VERSION}} for macOS, Windows and Linux</small>
+              <small id="primary-sub">Version {{VERSION}} for macOS and Linux · Windows soon</small>
             </span>
           </a>
           <a class="btn quiet big" href="https://github.com/senseyman/mergelio">Source on GitHub</a>
@@ -201,7 +201,7 @@
           <span class="os-name">macOS</span><span class="os-meta">Apple silicon</span>
         </button>
         <button type="button" class="os-tab" role="tab" id="tab-win" aria-controls="panel-win" aria-selected="false" tabindex="-1" data-os="win">
-          <span class="os-name">Windows</span><span class="os-meta">x64</span>
+          <span class="os-name">Windows</span><span class="os-meta">Soon</span>
         </button>
         <button type="button" class="os-tab" role="tab" id="tab-linux" aria-controls="panel-linux" aria-selected="false" tabindex="-1" data-os="linux">
           <span class="os-name">Linux</span><span class="os-meta">.deb and .rpm, x64</span>
@@ -231,25 +231,11 @@
           </div>
         </div>
 
-        <div class="os-panel" id="panel-win" role="tabpanel" aria-labelledby="tab-win" data-os="win">
+        <div class="os-panel os-panel-soon" id="panel-win" role="tabpanel" aria-labelledby="tab-win" data-os="win">
           <div class="os-about">
             <h3>Windows</h3>
-            <p class="req">x64</p>
-            <ol class="how">
-              <li>Run the installer.</li>
-              <li>Install for all users, or choose to install just for you.</li>
-            </ol>
-            <p class="trust">Signed with a Certum code signing certificate issued to Serhii Kotenko. To check it, open the installer's Properties → Digital Signatures, and compare the SHA-256 below.</p>
-          </div>
-          <div class="files">
-            <div class="file">
-              <div class="file-top">
-                <span class="file-kind">.exe</span>
-                <span class="file-info"><code class="file-name">{{WIN_FILE}}</code><span class="file-size">{{WIN_SIZE}}</span></span>
-                <a class="btn primary" href="{{WIN_URL}}" data-dl="win" data-size="{{WIN_SIZE}}" download><svg class="i" aria-hidden="true"><use href="#i-download"/></svg>Download</a>
-              </div>
-              <div class="sha"><span class="sha-label">SHA-256</span><code>{{WIN_SHA}}</code><button type="button" class="copy" aria-label="Copy SHA-256 of the installer">Copy</button></div>
-            </div>
+            <p class="req">Coming soon</p>
+            <p>The Windows version is not available yet. Meanwhile, Mergelio is available for macOS and Linux.</p>
           </div>
         </div>
 
@@ -282,7 +268,7 @@
         </div>
       </div>
 
-      <p class="fine">Every release ships <a href="{{SUMS_URL}}">SHA256SUMS.txt</a> with a detached signature, <a href="{{SIG_URL}}">SHA256SUMS.txt.asc</a>. Here is <a href="https://github.com/senseyman/mergelio#verifying-a-download">how to verify a download</a>. On macOS and Windows, Mergelio can install later updates itself if you let it check for new releases.</p>
+      <p class="fine">Every release ships <a href="{{SUMS_URL}}">SHA256SUMS.txt</a> with a detached signature, <a href="{{SIG_URL}}">SHA256SUMS.txt.asc</a>. Here is <a href="https://github.com/senseyman/mergelio#verifying-a-download">how to verify a download</a>. On macOS, Mergelio can install later updates itself if you let it check for new releases.</p>
     </section>
 
   </main>

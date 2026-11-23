@@ -48,7 +48,7 @@
   // Hero button: a direct link to the file for this platform.
   var primary = document.getElementById('primary-download');
   if (primary && os) {
-    var file = { mac: 'mac', win: 'win', linux: 'deb' }[os];
+    var file = { mac: 'mac', linux: 'deb' }[os];
     var link = document.querySelector('a[data-dl="' + file + '"]');
     var version = document.getElementById('download-title').textContent.replace(/^Download Mergelio\s*/, '');
     var names = { mac: 'macOS', win: 'Windows', linux: 'Linux' };

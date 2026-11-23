@@ -47,13 +47,14 @@ python3 -m http.server -d website 8000
 Requires `bash`, `curl` and `jq`. The script copies the site into `_site` and
 fills `index.html` from the latest release in `senseyman/mergelio` (override
 with `REPO=owner/name`): version, release date, and for each platform file
-(`.dmg`, Windows `setup.exe`, `.deb`, `.rpm`) its download URL, name, size and
+(`.dmg`, `.deb`, `.rpm`; Windows is not published for now) its download URL, name, size and
 SHA-256 digest, plus links to `SHA256SUMS.txt` and its `.asc` signature. The
 sitemap `lastmod` is set to the release's publish date. Set `GH_TOKEN` to avoid
 API rate limits.
 
 The build fails if the release is missing any platform file or its digest, or
-if a `{{PLACEHOLDER}}` is left unfilled, so a deploy never publishes a dead
+if a `{{PLACEHOLDER}}` is left unfilled, or if any Windows `.exe` link ends up
+on the page, so a deploy never publishes a dead
 download button.
 
 On the page, `main.js` detects the visitor's OS: the hero button becomes a

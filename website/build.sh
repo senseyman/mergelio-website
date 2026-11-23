@@ -63,7 +63,6 @@ asset() {
 }
 
 asset MAC  '-macos-arm64\.dmg$'
-asset WIN  '-windows-x64-setup\.exe$'
 asset DEB  '_amd64\.deb$'
 asset RPM  '\.x86_64\.rpm$'
 asset SUMS '^SHA256SUMS\.txt$'
@@ -91,5 +90,13 @@ for page in index.html privacy.html terms.html sitemap.xml; do
     exit 1
   fi
 done
+
+# Windows builds are not published for now. Fail if any page still links an
+# .exe or a Windows release asset, so an old template can never bring it back.
+# Plain mentions of a file like git.exe in text are fine.
+if grep -rniE '(href|src)="[^"]*\.exe"|windows-x64' "$OUT_DIR" --include='*.html' --include='*.js' --include='*.xml'; then
+  echo "error: Windows .exe reference found in built site" >&2
+  exit 1
+fi
 
 echo "Built ${OUT_DIR} for ${tag}"
